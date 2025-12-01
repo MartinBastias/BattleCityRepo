@@ -37,6 +37,11 @@ extern time_t tiempoBomba;
 extern int corazon_get;
 extern int disparando;
 
+extern int juegoTerminado;
+extern int tanqueGanador;
+
+extern int explotando;
+
 //Funciones laberinto
 int** crearLaberinto(int filas, int columnas);
 void generarLaberinto(int** lab, int filas, int columnas);
@@ -47,6 +52,7 @@ void mostrarLaberinto(int** lab, int filas, int columnas);
 void liberarLaberinto(int** lab, int filas);
 
 //Funciones juego
+void iniciarPartida(int** lab);
 void mostrarMapa(int** lab);
 void finDelJuego();
 void golpearTanque(int quien);
@@ -57,5 +63,8 @@ void disparar(int** lab, int x, int y, int dirX, int dirY);
 void aparecerCorazon(int** lab);
 void actualizarCorazon(int** lab);
 void explotarBomba(int** lab);
+
+void guardarPartida(int** lab);
+void cargarPartida(int** lab);
 
 #endif

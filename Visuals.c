@@ -21,14 +21,18 @@ Assets cargarAssets() {
 
     r.muro_destruible = LoadTexture("assets/spr_destructible.png");
     r.muro_indestructible = LoadTexture("assets/spr_indestructible.png");
+    r.corazon = LoadTexture("assets/spr_corazon.png");
+    r.bomba = LoadTexture("assets/spr_bomba.png");
     // r.bala = LoadTexture("assets/bala.png"); 
     
     //cargar audio
     r.musicaFondo = LoadMusicStream("assets/mus_main1.ogg");
-    PlayMusicStream(r.musicaFondo);
+    r.musicaEx = LoadMusicStream("assets/mus_ex.ogg");
+    
 
     r.corazon_get_sound = LoadSound("assets/snd_corazon_get.ogg");
     r.disparo = LoadSound("assets/snd_disparo.ogg");
+    r.explosion = LoadSound("assets/snd_explosion.ogg");
     
     int anchoMapa = COLUMNAS * r.tamCelda * r.escala;
     int altoMapa = FILAS * r.tamCelda * r.escala;
@@ -55,8 +59,10 @@ void descargarAssets(Assets r) {
     // UnloadTexture(r.bala)
     
     UnloadMusicStream(r.musicaFondo);
+    UnloadMusicStream(r.musicaEx);
     UnloadSound(r.corazon_get_sound);
     UnloadSound(r.disparo);
+    UnloadSound(r.explosion);
 }
 
 //funcion para dibujar el frame
@@ -88,10 +94,10 @@ void dibujarJuego(int** lab, Assets r) {
                 DrawCircle(posX + 16*r.escala, posY + 16*r.escala, 4*r.escala, YELLOW);
             }
             else if (tipo == 6) {
-                DrawRectangle(posX + 10, posY + 10, 20*r.escala, 20*r.escala, RED);
+                DrawTextureEx(r.corazon, (Vector2){posX, posY}, 0.0f, r.escala, WHITE);
             }
             else if (tipo == 7) {
-                DrawCircle(posX + 16*r.escala, posY + 16*r.escala, 10*r.escala, ORANGE);
+                DrawTextureEx(r.bomba, (Vector2){posX, posY}, 0.0f, r.escala, WHITE);
             }
         }
     }
@@ -147,6 +153,43 @@ void dibujarJuego(int** lab, Assets r) {
     int tiempoRestante = 120 - (time(NULL) - inicio);
     if(tiempoRestante < 0) tiempoRestante = 0;
     DrawText(TextFormat("TIEMPO: %d", tiempoRestante), 1050, 150, 40, RAYWHITE);
+
+    EndDrawing();
+}
+void dibujarMenuFin(Assets r) {
+    BeginDrawing();
+    
+    // Fondo semitransparente oscuro sobre el último frame del juego
+    DrawRectangle(0, 0, 1500, 900, (Color){0, 0, 0, 200});
+
+    const char* textoGanador;
+    Color colorGanador;
+
+    if (tanqueGanador == 1) {
+        textoGanador = "JUGADOR 1 GANA";
+        colorGanador = (Color){154,129,182,255}; // Morado T1
+    } else if (tanqueGanador == 2) {
+        textoGanador = "JUGADOR 2 GANA";
+        colorGanador = (Color){126,169,185,255}; // Azul T2
+    } else {
+        textoGanador = "EMPATE";
+        colorGanador = WHITE;
+    }
+
+    // Centrar textos
+    int anchoTexto = MeasureText(textoGanador, 60);
+    DrawText(textoGanador, (1500/2) - (anchoTexto/2), 300, 60, colorGanador);
+
+    DrawText(TextFormat("JUGADOR 1: %d Vidas", vidas1), (1500/2) - 150, 450, 30, (Color){154,129,182,255});
+    DrawText(TextFormat("JUGADOR 2:  %d Vidas", vidas2), (1500/2) - 150, 500, 30, (Color){126,169,185,255});
+
+    const char* mensajeReiniciar = "Si quieres volver a jugar pulsa ENTER";
+    int anchoMensaje = MeasureText(mensajeReiniciar, 20);
+    
+    // Efecto de parpadeo simple para el texto de reiniciar
+    if ((int)(GetTime() * 2) % 2 == 0) {
+        DrawText(mensajeReiniciar, (1500/2) - (anchoMensaje/2), 600, 20, WHITE);
+    }
 
     EndDrawing();
 }

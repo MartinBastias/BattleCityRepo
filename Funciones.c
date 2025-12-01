@@ -111,22 +111,16 @@ void mostrarMapa(int** lab) {
 
 //Define el resultado del juego
 void finDelJuego() {
-
-    printf("\n ||[FIN DEL JUEGO]||  \n\n");
-    printf("Vidas T1: %d\n", vidas1);
-    printf("Vidas T2: %d\n", vidas2);
-
+    juegoTerminado =1;
     if (vidas1 > vidas2) {
-        printf("\nGANADOR: Tanque 1\n");
+        tanqueGanador = 1;
     }
     else if (vidas2 > vidas1) {
-        printf("\nGANADOR: Tanque 2\n");
+        tanqueGanador = 2;
     }
     else {                    
-        printf("\nEMPATE\n");
-    }
-
-    exit(0);  //Termina el juego y deja mostrando los resultados finales
+        tanqueGanador = 0;
+    } 
 }
 
 
@@ -135,6 +129,7 @@ void golpearTanque(int quien) {
     if (quien == 1) {   //Tanque 1
         vidas1--;
         if (vidas1 <= 0) {
+            WaitTime(0.5);
             finDelJuego();
         }
         //Respawnea en la posición inicial
@@ -144,6 +139,7 @@ void golpearTanque(int quien) {
     else {  //Tanque 2
         vidas2--;
         if (vidas2 <= 0) {
+            WaitTime(0.5);
             finDelJuego();
         }
         //Respawnea en la posición inicial
@@ -186,11 +182,13 @@ void disparar(int** lab, int x, int y, int dirX, int dirY) {
 
         if (bx == tx1 && by == ty1 && vidas1 > 0) {//Si choca con el tanque 1
             golpearTanque(1);
+            explotando = 1;
             break;
         }
 
         if (bx == tx2 && by == ty2 && vidas2 > 0) {//Si choca con el tanque 2
             golpearTanque(2);
+            explotando = 1;
             break;
         }
 
@@ -263,29 +261,27 @@ void actualizarCorazon(int** lab) {
 
 //Que hace la bomba
 void explotarBomba(int** lab) {
-    static int bombaActiva = 0; 
-    static double tiempoInicio = 0;
-    static int x = 0, y = 0;
-
+    int x, y;
     //(Si no hay bomba activa)
-    if (bombaActiva == 0) {
+    if (bombaX == -1) {
         do {
             x = rand() % COLUMNAS;
             y = rand() % FILAS;
         } while (lab[y][x] != 0);
 
         lab[y][x] = 7;              //La bomba es 7
-        tiempoInicio = GetTime();   //Guardamos el tiempo de Raylib
-        bombaActiva = 1;            //Marcamos que hay una bomba esperando
+        tiempoBomba = time(NULL);  //Guardamos el tiempo de Raylib
+        bombaX = x;
+        bombaY = y;           //Marcamos que hay una bomba esperando
     }
     //(Si hay bomba activa)
     else {
-        if (GetTime() - tiempoInicio >= 3.0) {
+        if (time(NULL)- tiempoBomba >=3) {
             for (int dy = -1; dy <= 1; dy++) {      
                 for (int dx = -1; dx <= 1; dx++) { 
 
-                    int nx = x + dx;
-                    int ny = y + dy;
+                    int nx = bombaX + dx;
+                    int ny = bombaY + dy;
 
                     if (nx >= 0 && nx < COLUMNAS && ny >= 0 && ny < FILAS) { 
 
@@ -301,9 +297,120 @@ void explotarBomba(int** lab) {
                     }
                 }
             }
+            lab[bombaY][bombaX] = 0;   // Borramos la bomba
+            bombaX=-1;
+            bombaY=-1;
 
-            lab[y][x] = 0;   // Borramos la bomba
-            bombaActiva = 0; // Permitimos que se genere una nueva
+            ultimaBomba = time(NULL);
+            explotando =1;
         }
     }
+}
+void iniciarPartida(int** lab) {
+    //resetear todas las variables por default
+    vidas1 = 3;
+    vidas2 = 3;
+    
+    juegoTerminado = 0;
+    tanqueGanador = 0;
+    
+    corazonX = -1; corazonY = -1;
+    bombaX = -1; bombaY = -1;
+    explotando = 0;
+    corazon_get = 0;
+    disparando = 0;
+    
+    inicio = time(NULL);
+    ultimoCorazon = time(NULL)-30;
+    ultimaBomba = time(NULL);
+
+    spawnCorazon = 0; 
+    tiempoBomba = 0;
+    
+    //generar el laberinto
+    generarLaberinto(lab, FILAS, COLUMNAS);
+    
+    //colocar tanques
+    int x1, y1, x2, y2;
+    colocarTanques(lab, FILAS, COLUMNAS, &x1, &y1, &x2, &y2);
+
+    for(int i=0; i<FILAS; i++) {
+        for(int j=0; j<COLUMNAS; j++) {
+            if(lab[i][j] == 3) { tx1=j; ty1=i; spawnX1=j; spawnY1=i; lab[i][j]=0; }
+            if(lab[i][j] == 4) { tx2=j; ty2=i; spawnX2=j; spawnY2=i; lab[i][j]=0; }
+        }
+    }
+    
+    //resetear sus direcciones
+    dir1X = 0; dir1Y = -1;
+    dir2X = 0; dir2Y = -1;
+}
+
+void guardarPartida(int** lab) {
+    FILE* f = fopen("partida_guardada.txt", "w");
+    if (f == NULL) {
+        printf("Error al guardar la partida.\n");
+        return;
+    }
+
+    //guardar tanque 1 y2 (x, y , vidas y direccion)
+    fprintf(f, "%d %d %d %d %d\n", tx1, ty1, vidas1, dir1X, dir1Y);
+    fprintf(f, "%d %d %d %d %d\n", tx2, ty2, vidas2, dir2X, dir2Y);
+
+    //guardar tiempo
+    long tiempoJugado = (long)(time(NULL) - inicio);
+    fprintf(f, "%ld\n", tiempoJugado);
+
+    //guardar posicion de corazon
+    long deltaSpawnCorazon = (long)(spawnCorazon - inicio);
+    long deltaUltimoCorazon = (long)(ultimoCorazon - inicio);
+    fprintf(f, "%d %d %ld %ld\n", corazonX, corazonY, deltaSpawnCorazon, deltaUltimoCorazon);
+
+    long deltaBomba = (long)(tiempoBomba - inicio);
+    fprintf(f, "%d %d %ld\n", bombaX, bombaY, deltaBomba);
+
+    //guardar el estado del mapa
+    for (int i = 0; i < FILAS; i++) {
+        for (int j = 0; j < COLUMNAS; j++) {
+            fprintf(f, "%d ", lab[i][j]);
+        }
+        fprintf(f, "\n");
+    }
+    fclose(f);
+}
+
+void cargarPartida(int** lab) {
+    FILE* f = fopen("partida_guardada.txt", "r");
+    if (f == NULL) {
+        printf("No existe partida guardada.\n");
+        return; 
+    }
+
+    //cargar tanque 1 y 2, posicion, vidas y direccion
+    fscanf(f, "%d %d %d %d %d", &tx1, &ty1, &vidas1, &dir1X, &dir1Y);
+    fscanf(f, "%d %d %d %d %d", &tx2, &ty2, &vidas2, &dir2X, &dir2Y);
+
+    //cargar tiempo
+    long tiempoGuardado;
+    fscanf(f, "%ld", &tiempoGuardado);
+    inicio = time(NULL) - tiempoGuardado;
+
+    //cargar corazon
+    long deltaSpawn, deltaUltimo;
+    fscanf(f, "%d %d %ld %ld", &corazonX, &corazonY, &deltaSpawn, &deltaUltimo);
+
+    spawnCorazon = inicio + deltaSpawn;
+    ultimoCorazon = inicio + deltaUltimo;
+
+    long deltaBomba;
+    fscanf(f, "%d %d %ld", &bombaX, &bombaY, &deltaBomba);
+    tiempoBomba = inicio+ deltaBomba;
+
+    //cargar estado del mapa
+    for (int i = 0; i < FILAS; i++) {
+        for (int j = 0; j < COLUMNAS; j++) {
+            fscanf(f, "%d", &lab[i][j]);
+        }
+    }
+    fclose(f);
 }

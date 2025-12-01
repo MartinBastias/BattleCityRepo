@@ -24,3 +24,8 @@ time_t tiempoBomba = 0;
 
 int corazon_get = 0;
 int disparando = 0;
+
+int juegoTerminado =0;
+int tanqueGanador = 0;
+
+int explotando =0;

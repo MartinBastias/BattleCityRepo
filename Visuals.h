@@ -22,18 +22,21 @@ typedef struct {
     Texture2D bomba;
     
     Music musicaFondo;
+    Music musicaEx;
     Sound corazon_get_sound;
     Sound disparo;
+    Sound explosion;
     
     int tamCelda;   // 32
     int escala;     // 2
     int offX;       // desplazamiento X para centrar
     int offY;       // desplazamiento Y para centrar
-} Assets;
+}Assets;
 
 //funciones para las visuales
 Assets cargarAssets();
 void descargarAssets(Assets r);
 void dibujarJuego(int** lab, Assets r);
+void dibujarMenuFin(Assets r);
 
 #endif
