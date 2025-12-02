@@ -334,20 +334,13 @@ void iniciarPartida(int** lab) {
     int x1, y1, x2, y2;
     colocarTanques(lab, FILAS, COLUMNAS, &x1, &y1, &x2, &y2);
 
-    //asignar tanque1
-    tx1 = x1; 
-    ty1 = y1;
-    spawnX1 = x1; 
-    spawnY1 = y1;
-    lab[y1][x1] = 0;
+    for(int i=0; i<FILAS; i++) {
+        for(int j=0; j<COLUMNAS; j++) {
+            if(lab[i][j] == 3) { tx1=j; ty1=i; spawnX1=j; spawnY1=i; lab[i][j]=0; }
+            if(lab[i][j] == 4) { tx2=j; ty2=i; spawnX2=j; spawnY2=i; lab[i][j]=0; }
+        }
+    }
 
-    //asignar tanque2
-    tx2 = x2; 
-    ty2 = y2;
-    spawnX2 = x2; 
-    spawnY2 = y2;
-    lab[y2][x2] = 0;
-    
     //resetear sus direcciones
     dir1X = 0; dir1Y = -1;
     dir2X = 0; dir2Y = -1;
