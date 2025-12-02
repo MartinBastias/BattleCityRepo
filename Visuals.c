@@ -159,7 +159,6 @@ void dibujarJuego(int** lab, Assets r) {
 void dibujarMenuFin(Assets r) {
     BeginDrawing();
     
-    // Fondo semitransparente oscuro sobre el último frame del juego
     DrawRectangle(0, 0, 1500, 900, (Color){0, 0, 0, 200});
 
     const char* textoGanador;
@@ -176,7 +175,7 @@ void dibujarMenuFin(Assets r) {
         colorGanador = WHITE;
     }
 
-    // Centrar textos
+    //textos con ganador y vidas respectivas
     int anchoTexto = MeasureText(textoGanador, 60);
     DrawText(textoGanador, (1500/2) - (anchoTexto/2), 300, 60, colorGanador);
 
