@@ -57,4 +57,4 @@ Pierde quien quede sin vidas primero
 * Efectos de sonido (disparos, explosiones, power ups)
 
 5.-Menu extra:
-* Menú de fin de juego: Pantalla interactiva que anuncia al ganador y permite reiniciar la partida sin cerrar el programa
+* Menú de "Game Over": Pantalla interactiva que anuncia al ganador y permite reiniciar la partida sin cerrar el programa
