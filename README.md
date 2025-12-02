@@ -49,12 +49,12 @@ Pierde quien quede sin vidas primero
 
 3.-Visualización (Raylib):
 * Uso de biblioteca Raylib para renderizado 2D
-* Distintos sprites personalizados hechos a mano para los tanques (con rotacion segun dirección), muros (destruibles e indestructibles) y power ups.
+* Distintos sprites personalizados hechos a mano para los tanques (con rotacion segun dirección), muros (destruibles e indestructibles) y power ups
 
 4.-Sonidos y música personalizada compuesta por nosotros:
-* Música de fondo en bucle.
-* Música específica para la pantalla de "Game Over".
+* Música de fondo en bucle
+* Música específica para la pantalla de "Game Over"
 * Efectos de sonido (Disparos, Explosiones, Power-ups)
 
 5.-Menu extra:
-* Menú de fin de juego: Pantalla interactiva que anuncia al ganador y permite reiniciar la partida sin cerrar el programa.
+* Menú de fin de juego: Pantalla interactiva que anuncia al ganador y permite reiniciar la partida sin cerrar el programa
