@@ -8,13 +8,13 @@ Proyecto de Programación de Computadores grupo 11:
 
 Este archivo está destinado para sistemas **Windows**
 
-Este archivo contiene la libreria de visualizacion Raylib (necesaria) así que no hay que instalar nada además de un compilador
+Este archivo contiene la librería de visualización Raylib (necesaria) así que no hay que instalar nada además de un compilador
 
 La linea para compilar es esta:
 
 _gcc Main.c Funciones.c Variables.c Visuals.c -o BattleCity.exe -I include -L lib -lraylib -lopengl32 -lgdi32 -lwinmm_
 
- Para correr el juego:
+Para correr el juego:
 
 _./BattleCity.exe_
 
@@ -28,7 +28,7 @@ _./BattleCity.exe_
 | **Cargar Partida** | - | - | `SHIFT IZQ` |
 | **Reiniciar** | - | - | `ENTER` (Al finalizar) |
 
-El objetivo es moverse por el laberinto para eliminar el tanque enemigo
+El objetivo es moverse por el laberinto para eliminar al tanque enemigo
 
 Pierde quien quede sin vidas primero
 
@@ -45,11 +45,11 @@ Pierde quien quede sin vidas primero
 * Objetos como:
     * **Corazón:** Aparece aleatoriamente y recupera una vida al jugador que lo tome (siempre y cuando las vidas del jugador sean menores a 3)
     * **Bomba:** Aparece en el mapa y explota tras 3 segundos, rompiendo paredes y dañando tanques en un area de 3x3
-* Temporizador: Limite de tiempo de 120 segundos por partida
+* Temporizador: Límite de tiempo de 120 segundos por partida
 
 3.-Visualización (Raylib):
 * Uso de biblioteca Raylib para renderizado 2D
-* Distintos sprites personalizados hechos a mano para los tanques (con rotacion segun dirección), muros (destruibles e indestructibles) y power ups
+* Distintos sprites personalizados hechos a mano para los tanques (con rotación según dirección), muros (destructibles e indestructibles) y power ups
 
 4.-Sonidos y música personalizada compuesta por nosotros:
 * Música de fondo en bucle
